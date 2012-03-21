@@ -1,0 +1,194 @@
+<html><head><title>CIS553/753 Applied Cryptography, Programming Assignment 1 </title></head>
+<body bgcolor="#ffffff">
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+<tbody><tr>
+<td>
+</td>
+<td align="center" valign="middle">
+<h2>CIS553/753 Applied Cryptography, Spring 2012<br>
+Due: March 29
+</h2></td>
+</tr></tbody></table>
+<hr>
+<h1> Implement Double DES, and meet-in-the-middle attack </h1>
+
+Your job of this project is to implement Double DES based on a
+single-DES implementation,
+and then carry out a meet-in-the-middle attack to recover a partially
+known key, given a plaintext-ciphertext pair.
+
+<h2> Part 1: Implement Double DES (10 points)</h2>
+
+Implement Double DES, whose key size is 112 bits, based on the
+single-DES implementation provided by a crypto API of the programming language
+of your choice.  You
+should read the manual
+of the API to learn how to encrypt/decrypt in DES.
+One objective of this project is to get you familiarized with using 
+library API's to conduct crypto operations. 
+
+<p>
+Your program should take a key and a plaintext as arguments, and print on the
+screen the ciphertext. All the strings in input and output are interpreted as
+hexadecimal representations. Each
+hexadecimal digit represents four binary digits. So the key should
+have 28 hex digits (equivalent to 112 bits). Please use upper-case letters
+for the hex digits in the key and ciphertext, and lower-case letters for the
+hex digits in the plaintext.
+</p>
+
+<p>
+For example, suppose your program name is "double-des". Given
+<pre>
+double-des 0000000000000011111111111111 0123456789abcdef
+</pre>
+the output should be
+<pre>
+3057B90BD52BAE5E
+</pre>
+
+As another example, given
+<pre>
+double-des 0123456789ABCDEF0123456789AB 6162636461626364
+</pre>
+the output should be
+<pre>
+8FFAB5BBCF35B580
+</pre>
+
+<p>
+When using a block cipher like DES, we also need to specify cipher modes and
+padding modes. Both phases of your Double DES should use the ECB
+mode. Both phases of Double DES should use the padding mode
+"NoPadding". This means the plaintext must have a length of multiple blocks  
+(8 bytes, or 16 hex digits).
+</p>
+
+<p>
+DES uses a 56-bit key. However, in
+standard format the 56-bit key used by DES is stored in eight bytes, in which the least significant
+bit of each byte is used for odd parity (so that every byte in the key
+has an odd number of "1" bits). This is why your API function
+may require a byte array of size 8 for the key. Therefore, your program
+may need to add the appropriate parity bit for every 7 bits, to convert a DES
+key to the format acceptable by the API. Again, read the manual of the API carefully.
+</p>
+
+<h2> Part 2: Carry out a meet-in-the-middle attack (10 points)</h2>
+
+You will receive an email from the instructor in which you are given
+a partially-known key and a plaintext-ciphertext pair.
+For example, the plaintext could be "48656c6c6f20576f", and
+the ciphertext is "A95645B5D781BBAF".  We know that
+the ciphertext is encrypted by Double DES (with key size 112 bits).
+We also have a partial key "????1133114411??????AABB2233", where ?
+stands for an unknown hex digit (4 bits). Figure out the rest of the key
+using the meet-in-the-middle attack.
+
+<p>
+Note:
+<ul>
+<li> You better use a hash table to perform efficient
+middle-value look up. </li>
+
+<li> If your program is too slow to find the key, you can trade some
+points for some bits of the key: For each bit we give you, you lose 5
+points. Half an hour in Beocat is the maximum time we can accept for your
+program to find the key. </li>
+
+<li> The instructor may also test your key-finder on other keys. So make
+     sure your program can take the parital key and plaintext-ciphertext pair from the
+     command-line input. For example:
+
+<pre>
+break_2des 48656c6c6f20576f A95645B5D781BBAF ????1133114411??????AABB2233
+</pre>
+the output should be
+<pre>
+11221133114411556677AABB2233
+</pre>
+</li>
+</ul>
+
+<h2>What you need to submit</h2>
+
+Submit all your work at K-State Online. The
+submission includes
+
+<ul>
+
+<li> A readme file which contains clear instructions on how to compile and run your program. </li>
+
+<li> All your source code (for both part 1 and part 2).
+Make sure that your code can be compiled and run on the CIS Linux machines. </li>
+
+<li> For part 2, a script that is ready to run on Beocat by <i>any user</i>. This means you cannot
+     hardcode the program paths in your script since the grader will be logged in as a different user
+     and compile your code at his home directory. Instead, use relative paths in your script. You may
+     lose some points if we find it difficult to make your code run on Beocat.
+
+
+</ul>
+
+<p>
+Some sample tests are provided in the file test2DES; we will
+run other tests as well.
+</p>
+
+
+
+<h2>Beocat Cluster</h2>
+
+You will need to use Beocat cluster for part 2. 
+<b>Please read the <a href="http://support.cis.ksu.edu/BeocatDocs/SunGridEngine">documentation page</a> for Beocat cluster carefully 
+before using the system.</b> Here is an example showing how to use it:
+<ul>
+<li> Log into the Beocat head node. (Type "ssh your-eid@beocat.cis.ksu.edu", and input your eid password when asked.)</li>
+<li> Write the commands you are going to use into one shell script. </li>
+<li> Submit your job through the command line, <i>e.g.</i>, "qsub -l mem=4G,h_rt=20:00:00 -pe single 1 YOURJOB.sh".</li>
+  This command means you request 1 core for your job, and each of them has 4GB memory. Also the maximum runtime for your job is 20 hours. 
+YOURJOB.sh is the script you need to write in the second step. You can change either of aforementioned parameter to accommodate your job.
+</ul>
+
+<b>You shall always use the qsub command to submit a job to run on Beocat. It is against the Beocat policy to run computation-intensive
+programs on the head node.</b>
+
+
+<h2>Appendix</h2>
+
+Some potentially useful resources:
+
+<ul>
+<li>
+<a href="http://java.sun.com/javase/technologies/security/">
+<b>Java SE Security Documentation</b> </a>
+</li>
+
+<li>
+<a href="http://www.openssl.org/docs/crypto/crypto.html">
+<b>OpenSSL crypto library</b> </a>
+</li>
+
+<li>
+<a href="http://www.dlitz.net/software/pycrypto/">
+<b>PyCrypto - The Python Cryptography Toolkit</b> 
+</a>
+</li>
+
+<li>
+<a href="http://blogs.msdn.com/alejacma/archive/2007/11/23/p-invoking-cryptoapi-in-net-c-version.aspx">
+<b>Invoking CryptoAPI in .NET (C# version) </b> </a>
+</li>
+</ul>
+
+
+<h4> IMPORTANT: If you have referred to any existing examples (e.g. online materials), you must cite those examples in your submission.
+	        IN NO CASES MAY YOU COPY EXISTING CODE WRITTEN BY OTHERS.
+</h4>
+
+
+<h2>Acknowledgment</h2>
+
+We would like to thank <a href="http://www.cse.lehigh.edu/~gtan/">Prof. Gang Tan</a> from LeHigh University for providing the original version of this assignment.
+
+</body></html>
