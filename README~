@@ -1,0 +1,2 @@
+qsub -l mem=4G,h_rt=20:00:00 -pe single 1 cis753_PA1.sh
+

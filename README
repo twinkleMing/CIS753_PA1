@@ -1,2 +1,9 @@
-qsub -l mem=4G,h_rt=20:00:00 -pe single 1 cis753_PA1.sh
+The package I used to manipulate bit strings is "python-bitstring"
+http://code.google.com/p/python-bitstring/
+The package I used for crypt is "PyCrypto"
+https://www.dlitz.net/software/pycrypto/
 
+first write commands to "in.txt", each line represents one command
+then execute this command in beocat
+qsub -l mem=4G,h_rt=20:00:00 -pe single 1 cis753_PA1.sh
+finally you will get output from "out.txt"
